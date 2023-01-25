@@ -1,0 +1,4 @@
+method, transformers
+open integers, typecheckSanitize enumElimination nnf skolemize
+unchecked bv, typecheckSanitize enumElimination integertobitvector nnf skolemize
+checked bv, typecheckSanitize enumElimination integertobitvector nooverflow nnf skolemize
