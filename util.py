@@ -41,6 +41,16 @@ def valid_smt(filename: Union[bytes, str]) -> bool:
     else:
         return False
 
+def exclude(bad_values: List[str]) -> Callable[[Union[bytes, str]], bool]:
+    def do_exclusion(dirname: Union[bytes, str]) -> bool:
+        if type(dirname) == bytes:
+            dirname = dirname.decode('utf8')
+        pathname = os.path.basename(os.fspath(dirname))
+        if pathname == '':
+            pathname = os.path.basename(os.fspath(dirname[:-1]))
+        return pathname not in bad_values
+    return do_exclusion
+
 
 def partition(pred: Callable[[T], bool], iterable: Iterable[T]) -> Tuple[List[T], List[T]]:
     "Use a predicate to partition entries into true entries and false entries"
