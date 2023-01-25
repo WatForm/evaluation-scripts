@@ -295,7 +295,7 @@ class TestRunner:
         return filtered_dict
 
 
-class CVSTestRunner(TestRunner):
+class CSVTestRunner(TestRunner):
     def __init__(self, command: Command, *options: Option, timeout: int,
                  output_file: typing.TextIO = None,
                  result_fields: Optional[List[str]] = None,

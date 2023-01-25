@@ -57,3 +57,20 @@ def now_string() -> str:
 
 def setup_logging_default():
     logging.basicConfig(filename=f'log-{now_string()}.txt', level=logging.INFO)
+
+
+def setup_logging_debug():
+    logging.basicConfig(filename=f'log-{now_string()}.txt', level=logging.DEBUG)
+
+
+def flatten(lst):
+    """Flattens a list so that any elements that were lists are replaces by the elements of that list.
+    ex: [1, [[2], 3]] -> [1, 2, 3]"""
+
+    output = []
+    for x in lst:
+        if type(x) != list:
+            output.append(x)
+        else:
+            output.extend(flatten(x))
+    return output
