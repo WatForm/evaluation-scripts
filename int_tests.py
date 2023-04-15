@@ -57,7 +57,7 @@ if __name__ == "__main__":
     source_mode.add_argument('--dir', type=str,
                         help='Source is a directory containing .smt2 files for testing')
     source_mode.add_argument('--list', type=str,  # str because we need the filename to read in
-                        help='Source is a list to read files from for testing.')
+                        help='Source is a list to read files from for testing. If not supplied, `dir` is searched recursively.')
     
     parser.add_argument('-t', '--timeout',
                         type=int, default=60,
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     
         
     timeout = tr.Option('timeout', [args.timeout])
-    scope_info = tr.Option('scope_info', [4, 6, 8])
+    scope_info = tr.Option('scope_info', [8])
 
     
 

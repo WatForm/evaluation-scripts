@@ -1,4 +1,5 @@
-method, transformers
-open integers, typecheckSanitize enumElimination nnf skolemize
-unchecked bv, typecheckSanitize enumElimination integertobitvector nnf skolemize
-checked bv, typecheckSanitize enumElimination integertobitvector nooverflow nnf skolemize
+method,transformers
+open integers,TypecheckSanitize enumElimination nnf skolemize symmetryBreaking quantifierExpansion rangeFormula simplify domainElimination
+unchecked bv,TypecheckSanitize enumElimination integertobitvector nnf skolemize symmetryBreaking quantifierExpansion rangeFormula simplify domainElimination
+mj bv,TypecheckSanitize enumElimination integertobitvector nooverflowbv nnf skolemize symmetryBreaking quantifierExpansion rangeFormula simplify domainElimination
+oaf ints,TypecheckSanitize enumElimination oafInts nnf skolemize symmetryBreaking quantifierExpansion rangeFormula simplify domainElimination
