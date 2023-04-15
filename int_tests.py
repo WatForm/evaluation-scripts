@@ -16,8 +16,6 @@ def generate_command(opts: tr.OptionDict) -> List[str]:
         opts['target_file']
     ]
 
-command = 'fortress --timeout {timeout} --scope {scope_info} {target_file}'
-
 
 result_fields = ['sat', 'return_code', 'time_elapsed']
 
@@ -55,18 +53,21 @@ if __name__ == "__main__":
                         required=True,
                         help='The path to the folder containing the libraries to run fortress.')
     """
-    parser.add_argument('test_dir',
-                        required=True,
-                        help='Folder containing .smt2 files for testing')
+    source_mode = parser.add_mutually_exclusive_group(required=True)
+    source_mode.add_argument('--dir', type=str,
+                        help='Source is a directory containing .smt2 files for testing')
+    source_mode.add_argument('--list', type=str,  # str because we need the filename to read in
+                        help='Source is a list to read files from for testing.')
+    
     parser.add_argument('-t', '--timeout',
                         type=int, default=60,
                         help='Timeout for each problem in seconds')
     parser.add_argument('-o', '--output',
                         type=argparse.FileType('w'),
-                        default=util.now_string(),
+                        default=f'test-{util.now_string()}.csv',
                         help='The file to write the csv file out to.')
     parser.add_argument('-v', '--verbose',
-                        type=bool, action='store_true')
+                        action='store_true')
     
     parser.add_argument('-i', '--iterations',
                         type=int, default=1,
@@ -75,29 +76,39 @@ if __name__ == "__main__":
     parser.add_argument('-s', '--skip',
                         type=int, default=0,
                         help='Number of values to skip')
-    parser.add_argument('--force-header', type=bool, action='store_true',
+    parser.add_argument('--force-header', action='store_true',
                         help='forces the header to be written to the output file')
-
-
+    
     args = parser.parse_args()
+    
+    # Choose mode based on directory or list
+    if args.dir is not None:
+        test_file = tr.FilesOption('test_file',
+                                args.dir,
+                                recursive=True,
+                                file_filter=util.valid_smt,
+                                folder_filter=util.exclude(['combined', 'qf', 'partial', '.git']),
+                                )
+    elif args.list is not None:
+        test_file = tr.FromFileOption('test_file', args.list)
+    
+    command = 'fortress --scope {scope_info} --transformers {transformers} --timeout {timeout} {test_file}'
+    
+        
+    timeout = tr.Option('timeout', [args.timeout])
+    scope_info = tr.Option('scope_info', [4, 6, 8])
 
-    test_file = tr.FilesOption('test_file',
-                               args.test_dir,
-                               recursive=True,
-                               file_filter=util.valid_smt,
-                               folder_filter=util.exclude(['combined', 'qf', 'partial'])
-                               )
-    timeout = tr.Option('timeout', args.timeout)
-    scope_info = tr.Option('scope_info', [4, 8, 16])
+    
 
-    runner = tr.CSVTestRunner('echo {test_file}', # command,
+
+    runner = tr.CSVTestRunner(command,
                               test_file, timeout, scope_info, methods,
                               timeout=args.timeout,
                               output_file=args.output,
                               result_fields=result_fields,
                               fields_from_result=result_values,
                               fields_from_timeout=timeout_values,
-                              ignore_fields=['timeout'],
+                              ignore_fields=['timeout', 'transformers'],
                               )
     if args.verbose:
         util.setup_logging_debug()

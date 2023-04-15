@@ -1,4 +1,11 @@
 evaluationscripts.zip
+# Owen's mess
+log-*.txt
+test-*.csv
+
+# Simple vscode
+.vscode
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -36,7 +36,7 @@ def satisfiability_of_output(output: str) -> Satisfiablity:
 
 
 def valid_smt(filename: Union[bytes, str]) -> bool:
-    if os.fspath(filename).endswith('.smt'):
+    if os.fspath(filename).endswith('.smt2'):
         return True
     else:
         return False

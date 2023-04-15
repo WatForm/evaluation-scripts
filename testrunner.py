@@ -11,6 +11,7 @@ import typing
 import shlex
 
 import psutil
+from tqdm.auto import tqdm
 
 from typing import *
 from time import monotonic as monotonic_timer
@@ -36,7 +37,7 @@ class Option:
         if type(option_values) != list:
             option_values = list(option_values)
         if len(option_values) == 0:
-            raise ValueError("Cannot have no option values!")
+            raise ValueError("Cannot have no option values! In option " + self.opt_name)
         self.option_values: List[OptionInfo] = option_values
 
     def get_option_values(self) -> List[OptionValue]:
@@ -63,6 +64,7 @@ class FromFileOption(Option):
         values = []
         with open(filename, 'r') as f:
             values = f.readlines()
+        values = list(map(lambda x: x.strip(), values))
         super().__init__(opt_name, values)
 
 
@@ -97,7 +99,7 @@ class FilesOption(Option):
                 if file_filter is None or file_filter(file_name_from_root):
                     if abs_path:
                         # This is the absolute path from the file system root
-                        files_kept.append(os.path.abspath(file_name))
+                        files_kept.append(os.path.abspath(file_name_from_root))
                     else:
                         files_kept.append(file_name_from_root)
                         
@@ -231,7 +233,7 @@ class TestRunner:
         logging.info("Expecting %d commands, each run %d times. Total %d executions.",
                      num_commands_to_run, iterations, num_command_calls)
         try:
-            for dynamic_option_values in itertools.product(*self.dynamic_options):
+            for dynamic_option_values in tqdm(itertools.product(*self.dynamic_options), desc="tests", total=num_commands_to_run):
                 # Create a dictionary with option names -> option value for dynamic options then add static
                 dynamic_option_values: Dict[str, OptionInfo] = dict(zip(dynamic_option_names, dynamic_option_values))
                 dynamic_option_values = self._flatten_options(dynamic_option_values)
@@ -314,9 +316,12 @@ class CSVTestRunner(TestRunner):
         """
         super().__init__(command, *options, timeout=timeout, output_file=output_file)
         self._result_fields: List[str] = result_fields if result_fields is not None else []
+        # Default to including all fields
         if ignore_fields is None:
             ignore_fields = []
-        self._fields = list(filter(lambda x: x not in ignore_fields, self.dynamic_option_names)) + self._result_fields
+        # Specifically delve into csvoptions
+        possible_option_names = self._get_option_fieldnames(self.dynamic_options)
+        self._fields = list(filter(lambda x: x not in ignore_fields, possible_option_names)) + self._result_fields
         
         self.fields_from_timeout = fields_from_timeout
         self.fields_from_result = fields_from_result
@@ -327,6 +332,21 @@ class CSVTestRunner(TestRunner):
             fieldnames=self._fields,
             extrasaction='ignore'  # We can put in the whole dict and just ignore the ones we don't want
         )
+        
+    @staticmethod
+    def _get_option_fieldnames(options: List[Option]) -> List[str]:
+        """Returns the names of all the fields from options.
+        This includes splitting up CSV Options to get their dynamic options.
+        Currently ignores dynamic check for csv options. If you have a column that is all the same that's your fault for now."""
+        fieldnames = []
+        for option in options:
+            if type(option) == CSVOption:
+                headers = option.option_values[0].keys()
+                fieldnames.extend(headers)
+            else:
+                fieldnames.append(option.opt_name)
+        return fieldnames
+                
     
     def run(self, iterations: int = 1, skip: int = 0, force_write_header: bool = False):
         if (self.write_header and skip == 0) or force_write_header:
