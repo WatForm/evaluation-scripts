@@ -1,0 +1,4 @@
+file,method,snapshots,returncode,sat,time_elapsed
+../tc-als-models/bitcounter-tcmc-trans-ef-currentBitToBit2.als,cenegative,5,2,UNSURE,-1
+../tc-als-models/bitcounter-tcmc-trans-ef-currentBitToBit2.als,cenegative,7,2,UNSURE,-1
+../tc-als-models/bitcounter-tcmc-trans-ef-currentBitToBit2.als,cenegative,9,2,UNSURE,-1

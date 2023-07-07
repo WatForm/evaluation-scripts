@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: RunMany Ags",
+            "type": "python",
+            "request": "launch",
+            "program": "run_many_tc.py",
+            "args":  ["--files", "../tc-als-models/bit-counter-tcmc-trans-ef-T1.als", "../tc-als-models/digital-watch-tcmc-trans-ef-light-on.als", "../tc-als-models/ehealth-tcmc-trans-ef-add-patient.als", "../tc-als-models/elevator-tcmc-trans-ef-DefaultToGround.als", "../tc-als-models/farmer-tcmc-trans-ef-near2far.als", "../tc-als-models/mutex-tcmc-trans-ef-exit_critical_section.als", "../tc-als-models/rdt-tcmc-trans-ef-t13.als", "../tc-als-models/ref4-tcmc-trans-ef-retraction-sequence.als", "../tc-als-models/snapshot-ui-tcmc-trans-ef-SeeStudents.als", "../tc-als-models/traffic-light-tcmc-trans-ef-T5.als", "-n", "5", "7", "9", "-t", "1200", "-i", "3"],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}

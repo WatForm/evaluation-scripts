@@ -1,0 +1,11 @@
+file,snapshots,returncode,sat,time_elapsed
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,5,0,UNSAT,4.964371740818024
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,5,0,UNSAT,5.04544023424387
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,5,0,UNSAT,4.909216977655888
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,7,0,UNSAT,4.1078366711735725
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,7,0,UNSAT,4.116048343479633
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,7,0,UNSAT,3.9998086765408516
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,9,0,UNSAT,77.95764308422804
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,9,0,UNSAT,77.9916523694992
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,9,0,UNSAT,78.88392012566328
+../tc-als-models/digital-watch-tcmc-trans-ef-light-on.als,5,0,UNSAT,1063.8375249654055

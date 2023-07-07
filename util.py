@@ -36,10 +36,20 @@ def satisfiability_of_output(output: str) -> Satisfiablity:
 
 
 def valid_smt(filename: Union[bytes, str]) -> bool:
-    if os.fspath(filename).endswith('.smt'):
+    if os.fspath(filename).endswith('.smt2'):
         return True
     else:
         return False
+
+def exclude(bad_values: List[str]) -> Callable[[Union[bytes, str]], bool]:
+    def do_exclusion(dirname: Union[bytes, str]) -> bool:
+        if type(dirname) == bytes:
+            dirname = dirname.decode('utf8')
+        pathname = os.path.basename(os.fspath(dirname))
+        if pathname == '':
+            pathname = os.path.basename(os.fspath(dirname[:-1]))
+        return pathname not in bad_values
+    return do_exclusion
 
 
 def partition(pred: Callable[[T], bool], iterable: Iterable[T]) -> Tuple[List[T], List[T]]:
@@ -56,4 +66,25 @@ def now_string() -> str:
 
 
 def setup_logging_default():
-    logging.basicConfig(filename=f'log-{now_string()}.txt', level=logging.INFO)
+    logging.basicConfig(filename=f'log-{now_string()}.txt',
+                        level=logging.INFO,
+                        format='%(asctime)s %(levelname)s:%(message)s')
+
+
+def setup_logging_debug():
+    logging.basicConfig(filename=f'log-{now_string()}.txt',
+                        level=logging.DEBUG,
+                        format='%(asctime)s %(levelname)s:%(message)s')
+
+
+def flatten(lst):
+    """Flattens a list so that any elements that were lists are replaces by the elements of that list.
+    ex: [1, [[2], 3]] -> [1, 2, 3]"""
+
+    output = []
+    for x in lst:
+        if type(x) != list:
+            output.append(x)
+        else:
+            output.extend(flatten(x))
+    return output
