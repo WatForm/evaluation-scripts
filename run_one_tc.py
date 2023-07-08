@@ -79,7 +79,10 @@ if smttc_path == '':
 
 # Make fortress load sorts with -i
 #fortress_command = f'fortress -t {timeout} -T typecheck nnf {closure_transformer} oaf skolemize symmetrybreaking quantifierexpansion rangeformula simplify datatype  -i {smttc_path}'
-fortress_command = f'fortress -t {timeout} -T typecheck enumelimination {closure_transformer} ceeijck oaf symmetry rangeformula simplify datatype -i {smttc_path}'
+
+#fortress_command = f'fortress -t {timeout} -T typecheck enumelimination {closure_transformer} ceeijck oaf symmetry rangeformula simplify datatype -i {smttc_path}'
+
+fortress_command = f'fortress -t {timeout} -T typecheck nnf {closure_transformer} ceeijck oaf skolemize symmetrybreaking quantifierexpansion rangeformula simplify datatype  -i {smttc_path}'
 
 if DEBUG:
     print(f'{smttc_path=}')
@@ -99,11 +102,13 @@ try:
         print('---------------')
         print(result.stderr)
     sat = util.satisfiability_of_output(result.stdout).value
-    return_code = result.returncode
+    return_code = 0 if result.returncode == 0 else 3
     results = ','.join(map(str, [return_code, sat, time_elapsed]))
     print(results)
     if DEBUG:
         print(results)
+    if result.returncode != 0:
+        exit(3)
     exit(0)
 except subprocess.TimeoutExpired as timeout_error:
     print('timeout')

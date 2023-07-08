@@ -1,0 +1,14 @@
+file,method,snapshots,returncode,sat,time_elapsed
+../tc-als-models/bitcounter-tcmc-trans-ef-currentBitToBit2.als,cenegative,5,1,UNSURE,0.481257863342762
+../tc-als-models/bitcounter-tcmc-trans-ef-currentBitToBit2.als,cenegative,7,1,UNSURE,0.4544321969151497
+../tc-als-models/bitcounter-tcmc-trans-ef-currentBitToBit2.als,cenegative,9,1,UNSURE,0.45190751552581787
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,cenegative,5,1,UNSURE,0.4607366770505905
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,cenegative,7,1,UNSURE,0.4498950317502022
+../tc-als-models/bit-counter-tcmc-trans-ef-T1.als,cenegative,9,1,UNSURE,0.4524449035525322
+../tc-als-models/carousel-tcmc-trans-ef-Waiting.als,cenegative,5,1,UNSURE,0.5077155902981758
+../tc-als-models/carousel-tcmc-trans-ef-Waiting.als,cenegative,7,1,UNSURE,0.46269603073596954
+../tc-als-models/carousel-tcmc-trans-ef-Waiting.als,cenegative,9,1,UNSURE,0.4635098725557327
+../tc-als-models/chord-tcmc-trans-ef-StabilizeFromSucc.als,cenegative,5,1,UNSURE,0.5056222900748253
+../tc-als-models/chord-tcmc-trans-ef-StabilizeFromSucc.als,cenegative,7,1,UNSURE,0.44275474548339844
+../tc-als-models/chord-tcmc-trans-ef-StabilizeFromSucc.als,cenegative,9,1,UNSURE,0.46913982927799225
+../tc-als-models/digital-watch-tcmc-trans-ef-light-on.als,cenegative,5,1,UNSURE,0.46074797213077545

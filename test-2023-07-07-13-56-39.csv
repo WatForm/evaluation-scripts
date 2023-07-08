@@ -1,0 +1,9 @@
+file,method,snapshots,returncode,sat,time_elapsed
+../tc-als-models/bitcounter-tcmc-trans-ef-currentBitToBit2.als,cenegative,5,smttc_path='/home/ozila/work/eval-tc/../tc-als-models/test_check$1.smttc'
+fortress_command='fortress -t 1200 -T typecheck nnf cenegative ceeicjk oaf skolemize symmetrybreaking quantifierexpansion rangeformula simplify datatype  -i /home/ozila/work/eval-tc/../tc-als-models/test_check$1.smttc'
+
+---------------
+[scallop] Error: Bad arguments for option 'transformers': 'typecheck nnf cenegative ceeicjk oaf skolemize symmetrybreaking quantifierexpansion rangeformula simplify datatype' - Does Not Exist Error: ceeicjk is not a recognized Transformer.
+
+1,UNSURE,0.4467087686061859
+1,UNSURE,0.4467087686061859
