@@ -1,9 +1,9 @@
 """
     This python script contains two important classes: TestRunner and its most commonly used subclass CSVTestRunner.  
 
-    There is an example of how to use the class CSVTestRunner in example.py .
+    There is an example of how to use the class CSVTestRunner in example-simple.py .
 
-    TestRunner repeatedly run a single command with values substituted from a variety of options over the cross product of options and puts its output on the screen.
+    TestRunner repeatedly runs a single command with values substituted from a variety of options over the cross product of options.
 
     CSVTestRunner does the same, but allows the user to provide functions that interpret the output of each command into a line in a CSV output file.
 
@@ -37,18 +37,20 @@
             fields_from_result=result_values, # how to interpret results of run
             fields_from_timeout=timeout_values,   # how to interpret timeouts
         )  
-    runner.run(ITERATIONS, SKIP, FORCE_HEADER)
+        runner.run(2)  # This will run every set of options twice
 
     The command is written as a string with python format string formatting.
     For example,     
         command = '{op} {number} {text} something else {model} -command {cmdnum}'
-    with placeholders to substitute values for op, number, test, model, and cmdnum.
+    with placeholders to substitute values for options named op, number, test, model, and cmdnum.
 
     Options for the values to substitute into the command are of the Option class.
     The testrunner initialization takes a variable number of option arguments (followed by keyword parameters).  Each option can be either:
     1) (string name of option, list of values of types str, int, float or bool)
-    2) (string name, dictionary mapping strings to particular values)
+    2) (string name, list of dictionary mapping strings to particular values as in 1)
     Item 2) above is for values that must be paired together (e.g., model + cmd#)
+    Item 2) The string keys in the dictionary are treated as separate options, and should be the same for every element in the list
+    Item 2) e.g [{'model': 'A', 'cmd#': 1}, {'model': 'B', 'cmd#': 2}] will run A on command 1, and B on 2, but NOT A on 2 or B on 1.
     Item 2) is often obtained from the row of a CSV file. e.g.,   
             csv_opt = CSVOption('csv_opt', 'test.csv')
     Values for an option can also be obtained form each line of a file using
@@ -60,17 +62,15 @@
 
 
 import csv
-import io
 import os
 import subprocess
 import itertools
 import functools
 import logging
 import sys
-import time
 import typing
 import shlex
-import platform
+from string import Formatter
 
 import psutil
 from tqdm.auto import tqdm
@@ -232,12 +232,22 @@ class TestRunner:
     @staticmethod
     def format_command(command: Command, option_dict: OptionDict) -> List[str]:
         """Formats the command with the given options. If the command is a string, shlex is used to split it."""
-        if type(command) == str:
-            return shlex.split(command.format(**option_dict))
-        elif type(command) == list:
-            return list(map(lambda x: x.format(**option_dict), command))
-        else:
-            return command(option_dict)
+        try:
+            if type(command) == str:
+                return shlex.split(command.format(**option_dict))
+            elif type(command) == list:
+                return list(map(lambda x: x.format(**option_dict), command))
+            else:
+                return command(option_dict)
+        except KeyError as e:
+            # Create a more verbose error message
+            options_provided = sorted(list(option_dict.keys()))  # What options are passed to the command
+            fieldnames = sorted([fname for _, fname, _, _ in Formatter().parse(command) if fname])  # What options does the command want
+            e.add_note(f"The options provided are: {options_provided}.\nThe command expected: {fieldnames}.")
+            in_fieldnames_only = [fname for fname in fieldnames if fname not in options_provided]
+            if in_fieldnames_only:
+                e.add_note(f"The following keys are missing: {in_fieldnames_only}")
+            raise  # Re-raise the exception
 
     def get_num_commands_to_run(self):
         """Calculates the number of commands that will be run."""
