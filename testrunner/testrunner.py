@@ -184,16 +184,19 @@ class CSVOption(Option):
     Creates an option for each column, and synchronizes values so each row is used as one command.
     
     If the csv file does not contain a header row, `all_headers` can be provided to label each column.
-    If `kept_headers` is provided, only columns with headers in `kept_headers` are used."""
+    If `kept_headers` is provided, only columns with headers in `kept_headers` are used.
+    If `skip_initial_whitespace` is True, spaced immediately following the delimiter are ignored."""
     def __init__(self, opt_name: str, file_name: str,
-                 all_headers: Optional[List[str]] = None, kept_headers: Optional[List[str]] = None):
+                 all_headers: Optional[List[str]] = None,
+                 kept_headers: Optional[List[str]] = None,
+                 skip_initial_whitespace: bool = True):
         # Open the csv file
         with open(file_name, 'r') as csv_file:
             # Optionally label the columns
             if all_headers is None:
-                reader = csv.DictReader(csv_file)
+                reader = csv.DictReader(csv_file, skipinitialspace=skip_initial_whitespace)
             else:
-                reader = csv.DictReader(csv_file, fieldnames=all_headers)
+                reader = csv.DictReader(csv_file, fieldnames=all_headers, skipinitialspace=skip_initial_whitespace)
 
             option_values = []
             for row in reader:
@@ -240,6 +243,7 @@ class TestRunner:
             else:
                 return command(option_dict)
         except KeyError as e:
+            e.add_note("When formatting the command, an option was not found!")
             # Create a more verbose error message
             options_provided = sorted(list(option_dict.keys()))  # What options are passed to the command
             fieldnames = sorted([fname for _, fname, _, _ in Formatter().parse(command) if fname])  # What options does the command want
